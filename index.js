@@ -1,7 +1,10 @@
 import express from 'express';
 import { MongoClient } from 'mongodb';
 import cors from 'cors';
+import dns from 'node:dns';
 import 'dotenv/config'
+
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 
 
@@ -39,6 +42,14 @@ app.get('/users', async (req , res) => {
   res.send(allUsers)
 
 })
+
+app.post('/users', async (req, res) => {
+  const newUser = req.body;
+ 
+  const result = await users.insertOne(newUser)
+  res.send(result);
+   
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
