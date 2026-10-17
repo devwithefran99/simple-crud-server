@@ -1,5 +1,5 @@
 import express from 'express';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import cors from 'cors';
 import dns from 'node:dns';
 import 'dotenv/config'
@@ -42,6 +42,27 @@ app.get('/users', async (req , res) => {
   res.send(allUsers)
 
 })
+app.get('/users/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+    const query = { _id: new ObjectId(id) };
+    const result = await users.findOne(query);
+
+    if (!result) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
 app.post('/users', async (req, res) => {
   const newUser = req.body;
