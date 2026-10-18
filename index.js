@@ -4,6 +4,7 @@ import cors from 'cors';
 import dns from 'node:dns';
 import 'dotenv/config'
 
+
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 
@@ -70,6 +71,41 @@ app.post('/users', async (req, res) => {
   const result = await users.insertOne(newUser)
   res.send(result);
    
+});
+app.patch('/users/:id', async (req, res) => {
+    const id = req.params.id;
+    const updatedUser = req.body;
+
+   
+    });
+    const filter = {
+      _id: new ObjectId(id)
+    }
+    const options = { upsert : true} 
+    const updateDoc = {
+      $set :{
+        name:updatedUser.name ,
+        email : updatedUser.email
+
+      }
+
+    }
+    const result = await users.updateOne(filter, updateDoc , options);
+    res.send(result)
+
+});
+
+app.delete('/users/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const query = { _id: new ObjectId(id) };
+    const result = await users.deleteOne(query);
+
+    res.send(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
 
 app.listen(port, () => {
