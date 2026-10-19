@@ -42,7 +42,6 @@ app.get('/users', async (req , res) => {
   const allUsers = await cursor.toArray();
   res.send(allUsers)
 
-})
 app.get('/users/:id', async (req, res) => {
   try {
     const id = req.params.id;
